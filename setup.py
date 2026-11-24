@@ -11,7 +11,7 @@ from setuptools import find_packages, setup
 __plugin_name__ = 'PIAPortPlugin'
 __author__ = 'Nick Neos'
 __author_email__ = 'nicholas.neos@gmail.com'
-__version__ = '0.3'
+__version__ = '0.4'
 __url__ = ''
 __license__ = 'GPLv3'
 __description__ = ''
@@ -27,6 +27,7 @@ setup(
     url=__url__,
     license=__license__,
     long_description=__long_description__,
+    python_requires='==3.12.12',
 
     packages=find_packages(),
     package_data=__pkg_data__,
