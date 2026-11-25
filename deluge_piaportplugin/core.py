@@ -28,6 +28,7 @@ class Core(CorePluginBase):
     def enable(self):
         self.config = deluge.configmanager.ConfigManager(
             'piaportplugin.conf', DEFAULT_PREFS)
+        self.config.save()
         self.check_timer = LoopingCall(self.sync_port)
         self.check_timer.start(int(self.config['poll_interval']))
 

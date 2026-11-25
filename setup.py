@@ -11,7 +11,7 @@ from setuptools import find_packages, setup
 __plugin_name__ = 'PIAPortPlugin'
 __author__ = 'Nick Neos'
 __author_email__ = 'nicholas.neos@gmail.com'
-__version__ = '0.1.6'
+__version__ = '0.1.7'
 __url__ = 'https://github.com/nickneos/deluge-piaportplugin'
 __license__ = 'GPLv3'
 __description__ = ''

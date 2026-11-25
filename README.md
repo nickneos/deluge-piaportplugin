@@ -38,8 +38,22 @@ This is a fork of [jawilson/deluge-piaportplugin](https://github.com/jawilson/de
 
 ## Configuration
 
-Default settings can be adjusted in Deluge under **Preferences -> PIAPortPlugin** (or in `piaportplugin.conf`):
+On first startup, the plugin automatically generates `piaportplugin.conf` in your Deluge config directory with the default values:
 
 - `port_file`: Path to Gluetun's forwarded port file (default: `/pia/forwarded_port`)
 - `poll_interval`: How often to check for port changes in seconds (default: `60`)
 
+To customize these settings, stop Deluge, edit `piaportplugin.conf`, and restart Deluge.
+
+## Building Locally (Optional)
+
+To build the `.egg` package locally using Python 3.12 (matching the LinuxServer.io Deluge container):
+
+```bash
+python3.12 -m venv .venv
+source .venv/bin/activate
+pip install "setuptools<81" setuptools-git-versioning
+python setup.py bdist_egg
+```
+
+The compiled `.egg` file will be output to the `dist/` folder.
