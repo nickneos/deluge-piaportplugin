@@ -1,35 +1,35 @@
 # deluge-piaportplugin
 
-This is a simple plugin for [Deluge](https://www.deluge-torrent.org/) that's meant to be used with [Gluetun](https://github.com/qdm12/gluetun).
+A lightweight plugin for [Deluge](https://deluge-torrent.org) designed to pair with [Gluetun](https://github.com).
 
-Getting VPN port forwarding set up when using containers can be a pain since the port number is dynamic. This plugin automatically updates the incoming port for Deluge based on the current forwarded port.
+Containers using dynamic VPN port forwarding need a way to keep Deluge's listening port in sync. This plugin watches Gluetun's forwarded port file and updates Deluge automatically whenever the port changes.
 
 ## Usage
 
-1. Download a recent version from [releases](https://github.com/jawilson/deluge-piaportplugin/releases).
-2. Add to Deluge by going to Preferences -> Plugins -> Install.
-3. Create a file called `forwarded_port` containing a port number and mount it under `/pia` in the Deluge container (so full path should be `/pia/forwarded_port`).
+1. Grab the latest `.egg` build from [Releases](https://github.com/nickneos/deluge-piaportplugin/releases).
+2. Save `.egg` file in deluge `plugins` folder.
+2. Install and enable **PIAPortPlugin** in Deluge via **Preferences -> Plugins -> Install**.
+3. Open **Preferences -> Network** and uncheck **Use Random Port**.
+4. Configure Gluetun to export its forwarded port file into a volume mounted at `/pia` inside Deluge (making the file accessible at `/pia/forwarded_port`).
 
-	When using Docker Compose, this can be accomplished with:
+   Example Docker Compose setup for Gluetun v3:
 
-	```yaml
-	vpn:
-	   image: qmcgaw/gluetun:latest
-	   ...
-	   environment:
-	     ...
-	     PORT_FORWARDING: 'on'
-	     PORT_FORWARDING_STATUS_FILE: "/gluetun/forwarded_port"
-	   volumes:
-	     - ./gluetun:/gluetun
+   ```yaml
+   services:
+     gluetun:
+       image: qmcgaw/gluetun:v3
+       environment:
+         - VPN_PORT_FORWARDING=on
+         - PORT_FORWARD_ONLY=on
+         - VPN_PORT_FORWARDING_STATUS_FILE=/gluetun/forwarded_port
+       volumes:
+         - ./gluetun:/gluetun
 
-	deluge:
-	    image: ghcr.io/linuxserver/deluge:latest
-	    ...
-	    volumes:
-	      ...
-	      - ./gluetun:/pia:ro
-	```
+     deluge:
+       image: lscr.io/linuxserver/deluge:latest
+       network_mode: service:gluetun
+       volumes:
+         - ./gluetun:/pia:ro
+   ```
 
-4. Make sure you're using a VPN region that supports port forwarding. Here's [a list for PIA](https://www.privateinternetaccess.com/pages/client-support/#portforward).
-
+5. Choose a VPN region that supports port forwarding—refer to [PIA's support docs](https://privateinternetaccess.com) or [binhex's endpoint list](https://github.com).
