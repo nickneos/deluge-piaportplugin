@@ -12,11 +12,11 @@ jobs:
       with:
         python-version: '3.12.12'
     - name: Install build dependencies
-      run: python3 -m pip install --upgrade pip setuptools wheel setuptools-git-versioning
+      run: python3 -m pip install --upgrade pip "setuptools<70" wheel setuptools-git-versioning
     - name: Build egg
       run: python3 setup.py bdist_egg
     - name: Store the distribution packages
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: python-package-distributions
         path: dist/
