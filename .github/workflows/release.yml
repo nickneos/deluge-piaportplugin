@@ -16,7 +16,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.12.12'
+        python-version: '3.12'
     - name: Install build dependencies
       run: python3 -m pip install --upgrade pip "setuptools<70" wheel setuptools-git-versioning
     - name: Build egg

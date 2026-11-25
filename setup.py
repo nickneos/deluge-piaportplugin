@@ -27,7 +27,7 @@ setup(
     url=__url__,
     license=__license__,
     long_description=__long_description__,
-    python_requires='==3.12.12',
+    python_requires='>=3.12',
 
     packages=find_packages(),
     package_data=__pkg_data__,
