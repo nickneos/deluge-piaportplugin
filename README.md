@@ -32,4 +32,4 @@ Containers using dynamic VPN port forwarding need a way to keep Deluge's listeni
          - ./gluetun:/pia:ro
    ```
 
-5. Choose a VPN region that supports port forwarding—refer to [PIA's support docs](https://privateinternetaccess.com) or [binhex's endpoint list](https://github.com).
+5. Choose a VPN region that supports port forwarding—refer to [PIA's support docs](https://privateinternetaccess.com) or [binhex's endpoint list](https://gist.github.com/binhex/0d8bc1974bad90f8a61d2d4219ef862c).
