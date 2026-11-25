@@ -10,7 +10,6 @@ from __future__ import unicode_literals
 
 import logging
 import sys
-import json
 
 import deluge.configmanager
 from deluge.core.rpcserver import export
@@ -21,7 +20,7 @@ from twisted.internet.task import LoopingCall
 log = logging.getLogger(__name__)
 
 DEFAULT_PREFS = {
-    'port_file': '/pia/piaportforward.json',
+    'port_file': '/pia/forwarded_port',
     'poll_interval': 300
 }
 
@@ -50,9 +49,7 @@ class Core(CorePluginBase):
             if blocked:
                 log.info("Attempting to update listen port")
                 try:
-                    with open(self.config["port_file"], 'r') as f:
-                        piaconf = json.load(f)
-                        port = int(piaconf["port"])
+                    port = int(open(self.config["port_file"], 'r').read())
                 except:
                     log.error("Failed to open and read port file: %s" % sys.exc_info()[1])
                     return
