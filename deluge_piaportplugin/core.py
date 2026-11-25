@@ -9,7 +9,6 @@
 from __future__ import unicode_literals
 
 import logging
-import sys
 
 import deluge.configmanager
 from deluge.core.rpcserver import export
@@ -21,7 +20,7 @@ log = logging.getLogger(__name__)
 
 DEFAULT_PREFS = {
     'port_file': '/pia/forwarded_port',
-    'poll_interval': 300
+    'poll_interval': 60
 }
 
 
@@ -29,8 +28,8 @@ class Core(CorePluginBase):
     def enable(self):
         self.config = deluge.configmanager.ConfigManager(
             'piaportplugin.conf', DEFAULT_PREFS)
-        self.check_timer = LoopingCall(self.update_if_blocked)
-        self.check_timer = self.check_timer.start(int(self.config['poll_interval']))
+        self.check_timer = LoopingCall(self.sync_port)
+        self.check_timer.start(int(self.config['poll_interval']))
 
     def disable(self):
         if self.check_timer:
@@ -39,31 +38,22 @@ class Core(CorePluginBase):
     def update(self):
         pass
 
-    def update_if_blocked(self):
+    def sync_port(self):
         core = component.get("Core")
-        log.debug("Current listen port: %d" % core.get_listen_port())
-        def update_port(is_open):
-            blocked = not is_open
-            log.debug("Listen port %d is %s" % (core.get_listen_port(), (blocked and
-                        "blocked" or "not blocked")))
-            if blocked:
-                log.info("Attempting to update listen port")
-                try:
-                    port = int(open(self.config["port_file"], 'r').read())
-                except:
-                    log.error("Failed to open and read port file: %s" % sys.exc_info()[1])
-                    return
+        try:
+            with open(self.config["port_file"], 'r') as f:
+                port = int(f.read().strip())
+        except Exception as e:
+            log.error("Failed to open and read port file: %s" % e)
+            return
 
-                if core.get_listen_port() == port:
-                    log.warning("Current port file lists blocked port: %d" % port)
-                    return
+        if port <= 0 or core.get_listen_port() == port:
+            return
 
-                core.set_config({"listen_ports": [port, port]})
-                torrents = core.get_session_state()
-                core.force_reannounce(torrents)
-                log.info("Updated listen port to: %d" % port)
-
-        core.test_listen_port().addCallback(update_port)
+        core.set_config({"random_port": False, "listen_ports": [port, port]})
+        torrents = core.get_session_state()
+        core.force_reannounce(torrents)
+        log.info("Updated listen port to: %d" % port)
 
     @export
     def set_config(self, config):
